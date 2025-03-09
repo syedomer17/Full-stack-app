@@ -1,0 +1,5 @@
+{
+  "PORT": 5001,
+  "MONGO_URI": "mongodb+srv://omer:omer@cluster.nolm1.mongodb.net/property",
+  "JWT_KEY": "FLIEJFKEHJFKEHFKEFH"
+}

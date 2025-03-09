@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+
 
 const Register = () => {
   const [fullName, setFullName] = useState("");
@@ -9,24 +11,25 @@ const Register = () => {
   const [phone, setPhone] = useState("");
   const [role, setRole] = useState("admin");
   const [loading, setLoading] = useState(false);
-  
 
   const navigate = useNavigate();
 
   async function handleSubmit(event) {
     event.preventDefault();
     setLoading(true);
-    
 
     try {
       const apiUrl = "http://localhost:5001/api/public/register";
       const user = { fullName, email, password, phone, role };
 
       const response = await axios.post(apiUrl, user);
-      alert(response.data.msg || "User Registered Successfully");
-      navigate("/login");
+      toast(response.data.msg );
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+      
     } catch (error) {
-      setError(error.response?.data?.msg || "Registration failed");
+      toast.error(error.response?.data?.msg );
     } finally {
       setLoading(false);
     }
@@ -39,8 +42,6 @@ const Register = () => {
         onSubmit={handleSubmit}
       >
         <h2 className="text-2xl font-semibold text-center mb-4">Register</h2>
-
-        
 
         <div className="mb-4">
           <label htmlFor="fullName" className="block text-blue-700">
@@ -97,7 +98,6 @@ const Register = () => {
             type="text"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            pattern="^\d{10}$"
             title="Enter a valid 10-digit phone number"
             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
             required
@@ -107,19 +107,41 @@ const Register = () => {
         <div className="mb-4">
           <label className="block text-blue-700">Role</label>
           <div className="flex gap-4 mt-2">
-            {["admin", "buyer", "seller"].map((r) => (
-              <label key={r} className="flex items-center">
-                <input
-                  type="radio"
-                  name="role"
-                  value={r}
-                  checked={role === r}
-                  onChange={(e) => setRole(e.target.value)}
-                  className="mr-2"
-                />
-                {r.charAt(0).toUpperCase() + r.slice(1)}
-              </label>
-            ))}
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="role"
+                value="admin"
+                checked={role === "admin"}
+                onChange={(e) => setRole(e.target.value)}
+                className="mr-2"
+              />
+              Admin
+            </label>
+
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="role"
+                value="buyer"
+                checked={role === "buyer"}
+                onChange={(e) => setRole(e.target.value)}
+                className="mr-2"
+              />
+              Buyer
+            </label>
+
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="role"
+                value="seller"
+                checked={role === "seller"}
+                onChange={(e) => setRole(e.target.value)}
+                className="mr-2"
+              />
+              Seller
+            </label>
           </div>
         </div>
 
@@ -133,6 +155,7 @@ const Register = () => {
           {loading ? "Registering..." : "Register"}
         </button>
       </form>
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
     </div>
   );
 };
